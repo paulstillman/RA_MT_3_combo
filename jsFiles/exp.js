@@ -3,7 +3,7 @@ const jsPsych = initJsPsych({
   on_finish: function () {
     // jsPsych.data.displayData();
     // console.log(jsPsych.data.get().csv());
-    window.location = "https://yalesurvey.ca1.qualtrics.com/jfe/form/SV_1CdBpT9qthmaMe2?idnum=xxx"
+    // window.location = "https://yalesurvey.ca1.qualtrics.com/jfe/form/SV_1CdBpT9qthmaMe2?idnum=xxx"
   },
   extensions: [
     { type: jsPsychExtensionMouseTracking, params: { minimum_sample_time: 0, events: ['mousemove', 'mouseleave'] } }
@@ -107,13 +107,29 @@ var preload = {
 
 timeline.push(preload)
 
-const harmful_right = Math.floor(Math.random() * 2);
-if (harmful_right === 1) {
-  choices_hrmhrmless = ['HARMLESS', 'HARMFUL'];
+
+const is_harm = Math.floor(Math.random() * 2);
+const harmbad_right = Math.floor(Math.random() * 2);
+
+if (harmbad_right === 1 && is_harm === 1) {
+  choices_combo = ['HARMLESS', 'HARMFUL'];
+  console.log('got 1')
+} else if (harmbad_right === 0 && is_harm === 1) {
+  choices_combo = ['HARMFUL', 'HARMLESS'];
+  console.log('got 2')
+} else if (harmbad_right === 1 && is_harm === 0) {
+  choices_combo = ['GOOD', 'BAD'];
+  console.log('got 3')
 } else {
-  choices_hrmhrmless = ['HARMFUL', 'HARMLESS'];
+  console.log('got 4')
 }
 
+let instr_choice_1 = choices_combo[0]
+let instr_choice_2 = choices_combo[1]
+
+console.log(choices_combo)
+console.log(instr_choice_1)
+console.log(instr_choice_2)
 
 var enter_fullscreen = {
   type: jsPsychFullscreen,
@@ -135,12 +151,12 @@ var instr_page1 = `<div class='instructions'>
 including the people you got to know in the previous part of the experiment.</p>
 
 <p>You will be presented with many different images, and asked to evaluate whether you believe 
-the person, scene, object or animal depicted in the image is "HARMFUL" or "HARMLESS"</p></div>`; 
+the person, scene, object or animal depicted in the image is "` + instr_choice_1 + `" or "` + instr_choice_2 + `"</p></div>`; 
 
 var instr_page2 = `<div class='instructions'>
 
 <p>For each evaluation, there will be a button at the bottom of your screen that says "START". Pressing the START button will 
-make the image appear. After the image appears, select either HARMFUL or HARMLESS immediately.</p>
+make the image appear. After the image appears, select either ` + instr_choice_1 + ` or ` + instr_choice_2 + ` immediately.</p>
 
 <p>Please start moving your mouse as soon as the image appears and do not wait until you have made a decision to start moving your mouse.</p>
 
@@ -175,14 +191,14 @@ const start_screen_practice = {
 const mt_trial_practice_flowers = {
   type: jsPsychHtmlButtonResponsePES,
   stimulus: '<img src="./img/good/flowers6.jpg">',
-  choices: choices_hrmhrmless,
+  choices: choices_combo,
   adjust_aspect_ratio: 0,
   button_html: ['<button class="jspsych-btn mt-response-btn" id="left_response" style = "position:absolute; left: 0px; top: 0px">%choice%</button>', '<button class="jspsych-btn mt-response-btn" id="right_response" style = "position:absolute; right:0px; top: 0px">%choice%</button>'],
   slowmouse_message: `Please begin moving your mouse<br>as soon as the image appears`,
   mouseout_message: `Please keep your mouse<br>in the browser window`,
   data: {
     task: 'MT_practice',
-    harmful_right: harmful_right,
+    harmbad_right: harmbad_right,
     stim_type:  'practice'
   },
   extensions: [
@@ -192,14 +208,14 @@ const mt_trial_practice_flowers = {
 const mt_trial_practice_gun = {
   type: jsPsychHtmlButtonResponsePES,
   stimulus: '<img src="./img/bad/gun5.jpg">',
-  choices: choices_hrmhrmless,
+  choices: choices_combo,
   adjust_aspect_ratio: 0,
   button_html: ['<button class="jspsych-btn mt-response-btn" id="left_response" style = "position:absolute; left: 0px; top: 0px">%choice%</button>', '<button class="jspsych-btn mt-response-btn" id="right_response" style = "position:absolute; right:0px; top: 0px">%choice%</button>'],
   slowmouse_message: `Please begin moving your mouse<br>as soon as the image appears`,
   mouseout_message: `Please keep your mouse<br>in the browser window`,
   data: {
     task: 'MT_practice',
-    harmful_right: harmful_right,
+    harmbad_right: harmbad_right,
     stim_type:  'practice'
   },
   extensions: [
@@ -268,14 +284,14 @@ const mt_trial_competent = {
   type: jsPsychHtmlButtonResponsePES,
   // stimulus: '<img src="./img/' + jsPsych.timelineVariable('stimulus') + '.png">',
   stimulus: jsPsych.timelineVariable('stimulus'),
-  choices: choices_hrmhrmless,
+  choices: choices_combo,
   adjust_aspect_ratio: 0,
   button_html: ['<button class="jspsych-btn mt-response-btn" id="left_response" style = "position:absolute; left: 0px; top: 0px">%choice%</button>', '<button class="jspsych-btn mt-response-btn" id="right_response" style = "position:absolute; right:0px; top: 0px">%choice%</button>'],
   slowmouse_message: `Please begin moving your mouse<br>as soon as the image appears`,
   mouseout_message: `Please keep your mouse<br>in the browser window`,
   data: {
     task: 'MT',
-    harmful_right: harmful_right,
+    harmbad_right: harmbad_right,
     stim_type:  jsPsych.timelineVariable('stim_type')
   },
   extensions: [
@@ -409,7 +425,7 @@ timeline.push(leave_fullscreen)
 const save_data = {
   type: jsPsychPipe,
   action: "save",
-  experiment_id: "CRNweUjwTY8x",
+  experiment_id: "YyjkdgOBIjeu",
   filename: fname,
   data_string: () => jsPsych.data.get().csv()
 };
